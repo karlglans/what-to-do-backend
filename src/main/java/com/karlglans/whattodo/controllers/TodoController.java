@@ -23,6 +23,6 @@ public class TodoController {
 
   @PostMapping(value = "", produces = "application/json")
   ResponseEntity<Todo> addTodos(@RequestBody Todo todo) {
-    return new ResponseEntity<>(todoService.addTodo(todo), HttpStatus.CREATED);
+    return new ResponseEntity<Todo>(todoService.addTodo(todo), HttpStatus.CREATED);
   }
 }
