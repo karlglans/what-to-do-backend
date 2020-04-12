@@ -12,7 +12,12 @@ public class TodoService {
   @Autowired
   TodoRepository todoRepo;
 
+  @Autowired
+  UserService userService;
+
   public List<Todo> getTodos() {
+    int userId = userService.getUserId();
+
     List<Todo> ans = todoRepo.findAll();
     return ans;
   }
