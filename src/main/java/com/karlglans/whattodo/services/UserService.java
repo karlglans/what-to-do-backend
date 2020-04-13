@@ -1,5 +1,6 @@
 package com.karlglans.whattodo.services;
 
+import com.karlglans.whattodo.entities.User;
 import com.karlglans.whattodo.repositories.UserRepository;
 import com.karlglans.whattodo.security.SecurityUser;
 import com.karlglans.whattodo.services.exceptions.MissingUserException;
@@ -22,4 +23,10 @@ public class UserService {
             .getId();
   }
 
+  public User getUser() {
+    var auth = SecurityContextHolder.getContext().getAuthentication();
+    SecurityUser su = (SecurityUser) auth.getPrincipal();
+    return userRepo.findUserBySub(su.getSub())
+            .orElseThrow(() -> new MissingUserException("missing user " + su.getSub()));
+  }
 }
