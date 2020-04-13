@@ -16,6 +16,6 @@ public class Todo {
   private Boolean completed;
 
   @ManyToOne
-  @JoinColumn(name = "user_id", insertable = false, updatable = false)
+//  @JoinColumn(name = "user_id", insertable = false, updatable = false)
   private User user;
 }
