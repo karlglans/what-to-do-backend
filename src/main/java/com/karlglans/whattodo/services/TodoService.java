@@ -3,6 +3,7 @@ package com.karlglans.whattodo.services;
 import com.karlglans.whattodo.entities.Todo;
 import com.karlglans.whattodo.repositories.TodoRepository;
 
+import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
