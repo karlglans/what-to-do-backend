@@ -27,7 +27,9 @@ class TodoControllerIT extends AbstractMockMvcIT {
 
   private ObjectMapper objectMapper = new ObjectMapper();
 
-  // valid auth header for token secret: aaa
+  private final int existing_user1_id = 1;
+
+  // valid auth header for token secret: 'aaa', sub: '1'
   private String validAuthHeader = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ" +
           "3aGF0dG9kbyIsInN1YiI6MSwiaWF0IjoxNTg1NDg4MzcxfQ.yFBJrc9h-Hs9q5ns7DKwneLUNBDpMdSIQbTwX-6LepM";
 
@@ -35,7 +37,7 @@ class TodoControllerIT extends AbstractMockMvcIT {
 
   @Test
   void getTodos_whenValidToken_shouldGiveOk() throws Exception {
-    Mockito.when(userService.getUserId()).thenReturn(1);
+    Mockito.when(userService.getUserId()).thenReturn(existing_user1_id);
     mockMvc.perform(get("/api/v1/todos")
       .header(HttpHeaders.AUTHORIZATION, validAuthHeader))
       .andExpect(status().isOk());
@@ -59,7 +61,6 @@ class TodoControllerIT extends AbstractMockMvcIT {
   @Test
   void addTodo_whenInvalidToken_shouldGiveUnauthorized() throws Exception {
     Todo todo = new Todo();
-    todo.setId(1);
     todo.setMessage("new todo");
     mockMvc.perform(
       post("/api/v1/todos")
@@ -72,7 +73,6 @@ class TodoControllerIT extends AbstractMockMvcIT {
   @Test
   void addTodo_whenValidToken_shouldGiveOk() throws Exception {
     Todo todo = new Todo();
-    todo.setId(1);
     todo.setMessage("new todo");
     mockMvc.perform(
       post("/api/v1/todos")

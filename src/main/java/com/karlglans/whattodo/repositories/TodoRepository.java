@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface TodoRepository extends CrudRepository<Todo, Integer>
 {
-  List<Todo> findAll();
+  List<Todo> findAllByUserId(int userId);
 }
