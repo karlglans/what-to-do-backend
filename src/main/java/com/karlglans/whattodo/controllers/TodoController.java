@@ -13,8 +13,12 @@ import java.util.List;
 @RequestMapping("api/v1/todos")
 public class TodoController {
 
+  private final TodoService todoService;
+
   @Autowired
-  TodoService todoService;
+  public TodoController(TodoService todoService) {
+    this.todoService = todoService;
+  }
 
   @GetMapping()
   ResponseEntity<List<Todo>> getTodos() {
@@ -24,5 +28,10 @@ public class TodoController {
   @PostMapping(value = "", produces = "application/json")
   ResponseEntity<Todo> addTodos(@RequestBody Todo todo) {
     return new ResponseEntity<Todo>(todoService.addTodo(todo), HttpStatus.CREATED);
+  }
+
+  @DeleteMapping(value = "/{id}")
+  ResponseEntity deleteTodo(@PathVariable Integer id) {
+    return new ResponseEntity<>(todoService.deleteTodo(id), HttpStatus.OK);
   }
 }

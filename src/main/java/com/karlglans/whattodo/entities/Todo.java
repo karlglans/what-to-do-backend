@@ -1,5 +1,6 @@
 package com.karlglans.whattodo.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -15,6 +16,7 @@ public class Todo {
 
   private Boolean completed;
 
+  @JsonIgnore
   @ManyToOne
 //  @JoinColumn(name = "user_id", insertable = false, updatable = false)
   private User user;

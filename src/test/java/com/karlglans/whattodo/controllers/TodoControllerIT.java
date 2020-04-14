@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -80,5 +81,13 @@ class TodoControllerIT extends AbstractMockMvcIT {
         .contentType(MediaType.APPLICATION_JSON)
         .header(HttpHeaders.AUTHORIZATION, validAuthHeader))
       .andExpect(status().isCreated());
+  }
+
+  @Test
+  void deleteTodo_whenItemIsMissing_shouldGiveOk() throws Exception {
+    int someMissingTodoId = 1000;
+    mockMvc.perform(delete(String.format("/api/v1/todos/%d", someMissingTodoId))
+            .header(HttpHeaders.AUTHORIZATION, validAuthHeader))
+            .andExpect(status().isNotFound());
   }
 }
