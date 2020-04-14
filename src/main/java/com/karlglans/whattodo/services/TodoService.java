@@ -3,12 +3,13 @@ package com.karlglans.whattodo.services;
 import com.karlglans.whattodo.entities.Todo;
 import com.karlglans.whattodo.repositories.TodoRepository;
 
+import com.karlglans.whattodo.services.exceptions.IlligalActionException;
 import com.karlglans.whattodo.services.exceptions.MissingItemException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TodoService {
@@ -31,12 +32,18 @@ public class TodoService {
     return todoRepo.save(todo);
   }
 
-  public int deleteTodo(int id) {
-    try {
-      todoRepo.deleteById(id);
-    } catch (EmptyResultDataAccessException empty) {
-      throw new MissingItemException("Trying to delete note" + id);
+  public int deleteTodo(int noteId) {
+    int userId = userService.getUserId();
+    Optional<Todo> todoOptional = todoRepo.findById(noteId);
+    if (!todoOptional.isPresent()) {
+      throw new MissingItemException(String.format("User %d is trying to delete missing note %d",
+        userId, noteId));
     }
-    return id;
+    if (todoOptional.get().getUser().getId() != userId) {
+      throw new IlligalActionException(String.format("User %d is trying to delete someone else's note %d",
+        userId, noteId));
+    }
+    todoRepo.deleteById(noteId);
+    return noteId;
   }
 }

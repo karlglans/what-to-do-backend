@@ -1,5 +1,6 @@
 package com.karlglans.whattodo.controllers;
 
+import com.karlglans.whattodo.services.exceptions.IlligalActionException;
 import com.karlglans.whattodo.services.exceptions.MissingItemException;
 import com.karlglans.whattodo.services.exceptions.MissingUserException;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,13 @@ public class ExceptionHandling {
   protected ResponseEntity<String> handleMissingItemException(MissingItemException ex) {
     return ResponseEntity
             .status(HttpStatus.NOT_FOUND)
+            .body(null);
+  }
+
+  @ExceptionHandler(IlligalActionException.class)
+  protected ResponseEntity<String> handleIlligalActionException(IlligalActionException ex) {
+    return ResponseEntity
+            .status(HttpStatus.FORBIDDEN)
             .body(null);
   }
 }

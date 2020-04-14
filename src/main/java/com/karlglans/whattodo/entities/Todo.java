@@ -18,6 +18,5 @@ public class Todo {
 
   @JsonIgnore
   @ManyToOne
-//  @JoinColumn(name = "user_id", insertable = false, updatable = false)
   private User user;
 }

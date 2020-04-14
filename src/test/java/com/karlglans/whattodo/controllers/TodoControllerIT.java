@@ -34,41 +34,12 @@ class TodoControllerIT extends AbstractMockMvcIT {
   private String validAuthHeader = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ" +
           "3aGF0dG9kbyIsInN1YiI6MSwiaWF0IjoxNTg1NDg4MzcxfQ.yFBJrc9h-Hs9q5ns7DKwneLUNBDpMdSIQbTwX-6LepM";
 
-  private String invalidAuthHeader = "Bearer invalid";
-
   @Test
   void getTodos_whenValidToken_shouldGiveOk() throws Exception {
     Mockito.when(userService.getUserId()).thenReturn(existing_user1_id);
     mockMvc.perform(get("/api/v1/todos")
-      .header(HttpHeaders.AUTHORIZATION, validAuthHeader))
-      .andExpect(status().isOk());
-  }
-
-  @Test
-  void getTodos_whenValidTokenAndMissingStoredUser_shouldGiveUnauthorized() throws Exception {
-    Mockito.when(userService.getUserId()).thenThrow(new MissingUserException("user not found"));
-    mockMvc.perform(get("/api/v1/todos")
-      .header(HttpHeaders.AUTHORIZATION, validAuthHeader))
-      .andExpect(status().isUnauthorized());
-  }
-
-  @Test
-  void getTodos_whenInvalidToken_shouldGiveOk() throws Exception {
-    mockMvc.perform(get("/api/v1/todos")
-            .header(HttpHeaders.AUTHORIZATION, invalidAuthHeader))
-            .andExpect(status().isUnauthorized());
-  }
-
-  @Test
-  void addTodo_whenInvalidToken_shouldGiveUnauthorized() throws Exception {
-    Todo todo = new Todo();
-    todo.setMessage("new todo");
-    mockMvc.perform(
-      post("/api/v1/todos")
-        .content(objectMapper.writeValueAsString(todo))
-        .contentType(MediaType.APPLICATION_JSON)
-        .header(HttpHeaders.AUTHORIZATION, invalidAuthHeader))
-      .andExpect(status().isUnauthorized());
+            .header(HttpHeaders.AUTHORIZATION, validAuthHeader))
+            .andExpect(status().isOk());
   }
 
   @Test
@@ -84,7 +55,26 @@ class TodoControllerIT extends AbstractMockMvcIT {
   }
 
   @Test
+  void deleteTodo_whenUserOwnsTheResource_shouldGiveOk() throws Exception {
+    Mockito.when(userService.getUserId()).thenReturn(existing_user1_id);
+    int someTodoIdByTheUser1 = 100;
+    mockMvc.perform(delete(String.format("/api/v1/todos/%d", someTodoIdByTheUser1))
+            .header(HttpHeaders.AUTHORIZATION, validAuthHeader))
+            .andExpect(status().isOk());
+  }
+
+  @Test
+  void deleteTodo_whenUserDoNotOwnTheResource_shouldGiveForbidden() throws Exception {
+    Mockito.when(userService.getUserId()).thenReturn(existing_user1_id);
+    int todoIdBySomeOtherUser = 101;
+    mockMvc.perform(delete(String.format("/api/v1/todos/%d", todoIdBySomeOtherUser))
+            .header(HttpHeaders.AUTHORIZATION, validAuthHeader))
+            .andExpect(status().isForbidden());
+  }
+
+  @Test
   void deleteTodo_whenItemIsMissing_shouldGiveOk() throws Exception {
+    Mockito.when(userService.getUserId()).thenReturn(existing_user1_id);
     int someMissingTodoId = 1000;
     mockMvc.perform(delete(String.format("/api/v1/todos/%d", someMissingTodoId))
             .header(HttpHeaders.AUTHORIZATION, validAuthHeader))
