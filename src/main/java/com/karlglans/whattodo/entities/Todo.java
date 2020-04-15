@@ -14,7 +14,7 @@ public class Todo {
 
   private String message;
 
-  private Boolean completed;
+  private boolean completed;
 
   @JsonIgnore
   @ManyToOne

@@ -1,5 +1,6 @@
 package com.karlglans.whattodo.controllers;
 
+import com.karlglans.whattodo.controllers.vm.TodoVm;
 import com.karlglans.whattodo.entities.Todo;
 import com.karlglans.whattodo.services.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,4 +35,10 @@ public class TodoController {
   ResponseEntity deleteTodo(@PathVariable Integer id) {
     return new ResponseEntity<>(todoService.deleteTodo(id), HttpStatus.OK);
   }
+
+  @PatchMapping(value = "/{id}", produces = "application/json")
+  ResponseEntity updateTodo(@PathVariable Integer id, @RequestBody TodoVm todo) {
+    return new ResponseEntity<Todo>(todoService.alterTodo(todo, id), HttpStatus.OK);
+  }
+
 }
