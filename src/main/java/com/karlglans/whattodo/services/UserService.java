@@ -26,6 +26,7 @@ public class UserService {
   public User getUser() {
     var auth = SecurityContextHolder.getContext().getAuthentication();
     SecurityUser su = (SecurityUser) auth.getPrincipal();
+
     return userRepo.findUserBySub(su.getSub())
             .orElseThrow(() -> new MissingUserException("missing user " + su.getSub()));
   }
