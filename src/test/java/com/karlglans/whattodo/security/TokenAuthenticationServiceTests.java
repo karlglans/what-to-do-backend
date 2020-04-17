@@ -4,20 +4,20 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
+@SpringBootTest
 public class TokenAuthenticationServiceTests {
   @Autowired
-  TokenAuthenticationService aaa;
-
+  TokenAuthenticationService tokenAuthenticationService;
 
   @Test
-  public void equalOperator() {
-
+  public void canMakeToken() {
     SecurityUser securityUser = new SecurityUser();
     securityUser.setSub("123");
-    String token = aaa.createToken(securityUser);
+    String token = tokenAuthenticationService.createToken(securityUser);
     Assert.assertNotNull(token);
 
   }
