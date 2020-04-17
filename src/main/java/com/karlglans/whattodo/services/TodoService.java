@@ -61,7 +61,7 @@ public class TodoService {
       todo.setMessage(todoVm.getMessage());
       isChanged = true;
     }
-    if (todoVm.getCompleted() != null) {
+    if (todoVm.getCompleted() != null && todoVm.getCompleted() != todo.isCompleted()) {
       todo.setCompleted(todoVm.getCompleted());
       isChanged = true;
     }
@@ -113,6 +113,7 @@ public class TodoService {
   public boolean toggleAllTodosCompleteStatus() {
     int userId = userService.getUserId();
     List<Todo> todos = todoRepo.findAllByUserId(userId);
+    if (todos.isEmpty()) throw new NoChangeException(String.format("no todos found for toggle by user %d", userId));
     boolean completed = todosIsAllCompleted(todos);
     return setCompleted(todos, !completed);
   }
