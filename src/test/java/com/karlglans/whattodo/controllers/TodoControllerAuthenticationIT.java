@@ -11,14 +11,17 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 // Mainly testing some basic cases when authentication is going wrong
+// Will replace UserService with a mock-class found from UserServiceTestConfiguration
 
 @ActiveProfiles("test")
+@Transactional
 class TodoControllerAuthenticationIT extends AbstractMockMvcIT {
 
   @Autowired
@@ -29,9 +32,7 @@ class TodoControllerAuthenticationIT extends AbstractMockMvcIT {
 
   private ObjectMapper objectMapper = new ObjectMapper();
 
-  // valid auth header for token secret: 'aaa', sub: '1'
-  private String validAuthHeader = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ" +
-          "3aGF0dG9kbyIsInN1YiI6MSwiaWF0IjoxNTg1NDg4MzcxfQ.yFBJrc9h-Hs9q5ns7DKwneLUNBDpMdSIQbTwX-6LepM";
+  private String dummyAuthHeader = "Bearer be replaced by id from mock";
 
   private String invalidAuthHeader = "Bearer invalid";
 
@@ -46,7 +47,7 @@ class TodoControllerAuthenticationIT extends AbstractMockMvcIT {
   void getTodos_whenValidTokenAndMissingStoredUser_shouldGiveUnauthorized() throws Exception {
     Mockito.when(userService.getUserId()).thenThrow(new MissingUserException("user not found"));
     mockMvc.perform(get("/api/v1/todos")
-            .header(HttpHeaders.AUTHORIZATION, validAuthHeader))
+            .header(HttpHeaders.AUTHORIZATION, dummyAuthHeader))
             .andExpect(status().isUnauthorized());
   }
 
