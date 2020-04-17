@@ -8,18 +8,18 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Transactional
 class TodoControllerPatch extends AbstractMockMvcIT {
 
   @Autowired
   private MockMvc mockMvc;
 
   private ObjectMapper objectMapper = new ObjectMapper();
-
-  private final int existing_user1_id = 1;
 
   // valid auth header for token secret: 'aaa', sub: '1'
   private String validAuthHeader = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ" +
