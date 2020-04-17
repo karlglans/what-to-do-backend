@@ -1,7 +1,6 @@
 package com.karlglans.whattodo.services;
 
 import com.karlglans.whattodo.controllers.vm.TodoVm;
-import com.karlglans.whattodo.controllers.vm.ToggleCompleteResponse;
 import com.karlglans.whattodo.entities.Todo;
 import com.karlglans.whattodo.repositories.TodoRepository;
 
