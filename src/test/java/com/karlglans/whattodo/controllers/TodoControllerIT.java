@@ -53,7 +53,7 @@ class TodoControllerIT extends AbstractMockMvcIT {
 
   @Test
   void deleteTodo_whenUserDoNotOwnTheResource_shouldGiveForbidden() throws Exception {
-    int todoIdBySomeOtherUser = 101;
+    int todoIdBySomeOtherUser = 106;
     mockMvc.perform(delete(String.format("/api/v1/todos/%d", todoIdBySomeOtherUser))
             .header(HttpHeaders.AUTHORIZATION, validAuthHeader))
             .andExpect(status().isForbidden());
@@ -73,6 +73,24 @@ class TodoControllerIT extends AbstractMockMvcIT {
             post("/api/v1/todos/toggle-complete")
                     .header(HttpHeaders.AUTHORIZATION, validAuthHeader))
             .andExpect(status().isOk());
+  }
+
+  @Test
+  void deleteCompleted_whenCompletedTodosExists_shouldGiveOk() throws Exception {
+    // Precondition: User 1 has some completed todos
+    mockMvc.perform(
+            delete("/api/v1/todos/delete-completed")
+                    .header(HttpHeaders.AUTHORIZATION, TestDataSetup1.validAuthHeaderUser1))
+            .andExpect(status().isOk());
+  }
+
+  @Test
+  void deleteCompleted_whenCompletedTodosDoNotExists_shouldGiveNotModified() throws Exception {
+    // Precondition: User 2 has no completed todos
+    mockMvc.perform(
+            delete("/api/v1/todos/delete-completed")
+                    .header(HttpHeaders.AUTHORIZATION, TestDataSetup1.validAuthHeaderUser2))
+            .andExpect(status().isNotModified());
   }
 
 }

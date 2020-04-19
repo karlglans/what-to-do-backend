@@ -10,4 +10,5 @@ import java.util.List;
 public interface TodoRepository extends CrudRepository<Todo, Integer>
 {
   List<Todo> findAllByUserId(int userId);
+  int deleteTodoByUserIdAndCompletedIsTrue(int userId);
 }
