@@ -47,4 +47,10 @@ public class TodoController {
     return new ResponseEntity<> (new ToggleCompleteResponse(todoService.toggleAllTodosCompleteStatus()), HttpStatus.OK);
   }
 
+  @DeleteMapping(value = "/delete-completed")
+  ResponseEntity deleteCompleted() {
+    todoService.deleteCompleted();
+    return new ResponseEntity(HttpStatus.OK);
+  }
+
 }

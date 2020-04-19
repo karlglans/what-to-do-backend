@@ -7,6 +7,7 @@ import com.karlglans.whattodo.repositories.TodoRepository;
 import com.karlglans.whattodo.services.exceptions.IlligalActionException;
 import com.karlglans.whattodo.services.exceptions.MissingItemException;
 import com.karlglans.whattodo.services.exceptions.NoChangeException;
+import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -115,5 +116,11 @@ public class TodoService {
     if (todos.isEmpty()) throw new NoChangeException(String.format("no todos found for toggle by user %d", userId));
     boolean completed = todosIsAllCompleted(todos);
     return setCompleted(todos, !completed);
+  }
+
+  public void deleteCompleted() {
+    int userId = userService.getUserId();
+    if (todoRepo.deleteTodoByUserIdAndCompletedIsTrue(userId) == 0)
+      throw new NoChangeException(String.format("no todos found for delete-completed for user %d", userId));
   }
 }

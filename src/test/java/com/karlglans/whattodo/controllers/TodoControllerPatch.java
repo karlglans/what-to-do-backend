@@ -57,11 +57,11 @@ class TodoControllerPatch extends AbstractMockMvcIT {
     TodoVm todoVm = new TodoVm(); // view model
     String previousMessage = "todo1";
     todoVm.setMessage(previousMessage);
-    int todoIdBySomeOtherUser = 101;
+    int todoIdBySomeOtherUser = TestDataSetup1.someTodoIdForTodoByUser2;
     mockMvc.perform(patch(String.format("/api/v1/todos/%d", todoIdBySomeOtherUser))
             .content(objectMapper.writeValueAsString(todoVm))
             .contentType(MediaType.APPLICATION_JSON)
-            .header(HttpHeaders.AUTHORIZATION, validAuthHeader))
+            .header(HttpHeaders.AUTHORIZATION, TestDataSetup1.validAuthHeaderUser1))
             .andExpect(status().isForbidden());
   }
 }
