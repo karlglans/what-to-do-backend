@@ -20,19 +20,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 // Mainly testing some basic cases when authentication is going wrong
 // Will replace UserService with a mock-class found from UserServiceTestConfiguration
 
-@ActiveProfiles("test")
 @Transactional
+@ActiveProfiles("test")
 class TodoControllerAuthenticationIT extends AbstractMockMvcIT {
 
   @Autowired
   private MockMvc mockMvc;
 
-  @Autowired
-  private UserService userService;
-
   private ObjectMapper objectMapper = new ObjectMapper();
-
-  private String dummyAuthHeader = "Bearer be replaced by id from mock";
 
   private String invalidAuthHeader = "Bearer invalid";
 
@@ -45,9 +40,10 @@ class TodoControllerAuthenticationIT extends AbstractMockMvcIT {
 
   @Test
   void getTodos_whenValidTokenAndMissingStoredUser_shouldGiveUnauthorized() throws Exception {
-    Mockito.when(userService.getUserId()).thenThrow(new MissingUserException("user not found"));
+    UserService localUserServiceMock = Mockito.mock(UserService.class);
+    Mockito.when(localUserServiceMock.getUserId()).thenThrow(new MissingUserException("user not found"));
     mockMvc.perform(get("/api/v1/todos")
-            .header(HttpHeaders.AUTHORIZATION, dummyAuthHeader))
+            .header(HttpHeaders.AUTHORIZATION, TestDataSetup1.validAuthHeaderButMissingUser))
             .andExpect(status().isUnauthorized());
   }
 
