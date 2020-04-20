@@ -23,10 +23,6 @@ class TodoControllerPatch extends AbstractMockMvcIT {
 
   private ObjectMapper objectMapper = new ObjectMapper();
 
-  // valid auth header for token secret: 'aaa', sub: '1'
-  private String validAuthHeader = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ" +
-          "3aGF0dG9kbyIsInN1YiI6MSwiaWF0IjoxNTg1NDg4MzcxfQ.yFBJrc9h-Hs9q5ns7DKwneLUNBDpMdSIQbTwX-6LepM";
-
 
   @Test
   void updateTodo_whenUserOwnsTheResourceAndChangingMessageProperty_shouldGiveOk() throws Exception {
@@ -37,7 +33,7 @@ class TodoControllerPatch extends AbstractMockMvcIT {
     mockMvc.perform(patch(String.format("/api/v1/todos/%d", someTodoIdOwnedByTheUser1))
             .content(objectMapper.writeValueAsString(todoVm))
             .contentType(MediaType.APPLICATION_JSON)
-            .header(HttpHeaders.AUTHORIZATION, validAuthHeader))
+            .header(HttpHeaders.AUTHORIZATION, TestDataSetup1.validAuthHeaderUser1))
             .andExpect(status().isOk());
   }
 
@@ -50,7 +46,7 @@ class TodoControllerPatch extends AbstractMockMvcIT {
     mockMvc.perform(patch(String.format("/api/v1/todos/%d", someTodoIdOwnedByTheUser1))
             .content(objectMapper.writeValueAsString(todoVm))
             .contentType(MediaType.APPLICATION_JSON)
-            .header(HttpHeaders.AUTHORIZATION, validAuthHeader))
+            .header(HttpHeaders.AUTHORIZATION, TestDataSetup1.validAuthHeaderUser1))
             .andExpect(status().isNotModified());
   }
 
