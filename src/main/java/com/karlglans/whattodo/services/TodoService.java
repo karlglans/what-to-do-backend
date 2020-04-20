@@ -4,10 +4,7 @@ import com.karlglans.whattodo.controllers.vm.TodoVm;
 import com.karlglans.whattodo.entities.Todo;
 import com.karlglans.whattodo.repositories.TodoRepository;
 
-import com.karlglans.whattodo.services.exceptions.IlligalActionException;
-import com.karlglans.whattodo.services.exceptions.MissingItemException;
-import com.karlglans.whattodo.services.exceptions.NoChangeException;
-import lombok.var;
+import com.karlglans.whattodo.services.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +16,10 @@ import java.util.stream.Collectors;
 public class TodoService {
   private final TodoRepository todoRepo;
   private final UserService userService;
+
+  static final String noInputMessage = "no input";
+  static final String inputTooSmallMessage = "no message is too small";
+  static final String inputTooBigMessage = "no message is too big";
 
   @Autowired
   public TodoService(TodoRepository todoRepo, UserService userService) {
@@ -68,7 +69,26 @@ public class TodoService {
     return isChanged;
   }
 
+  /**
+   * TodoVm is validated in a special way since some parts of the object are allowed to be null.
+   */
+  private void validateTodoVM(TodoVm todoVm) {
+    // a complex validation. Could have either a complete stare or a message. If both is missing then validation will fail
+    if (todoVm.getCompleted() == null) {
+      if (todoVm.getMessage() == null) {
+        throw new ValidationException(noInputMessage);
+      }
+      if (todoVm.getMessage().length() == 1) {
+        throw new ValidationException(inputTooSmallMessage);
+      }
+      if (todoVm.getMessage().length() > 256) {
+        throw new ValidationException(inputTooBigMessage);
+      }
+    }
+  }
+
   public Todo alterTodo(TodoVm todoVm, int todoId) {
+    validateTodoVM(todoVm);
     int userId = userService.getUserId();
     Optional<Todo> todoOptional = todoRepo.findById(todoId);
     if (!todoOptional.isPresent()) {
