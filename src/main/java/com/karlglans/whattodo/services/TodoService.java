@@ -7,6 +7,7 @@ import com.karlglans.whattodo.repositories.TodoRepository;
 import com.karlglans.whattodo.services.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -138,6 +139,7 @@ public class TodoService {
     return setCompleted(todos, !completed);
   }
 
+  @Transactional
   public void deleteCompleted() {
     int userId = userService.getUserId();
     if (todoRepo.deleteTodoByUserIdAndCompletedIsTrue(userId) == 0)
