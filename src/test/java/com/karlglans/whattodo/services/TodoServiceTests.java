@@ -5,6 +5,7 @@ import com.karlglans.whattodo.entities.Todo;
 import com.karlglans.whattodo.entities.User;
 import com.karlglans.whattodo.repositories.TodoRepository;
 import com.karlglans.whattodo.services.exceptions.NoChangeException;
+import com.karlglans.whattodo.services.exceptions.ValidationException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +18,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -153,5 +156,38 @@ public class TodoServiceTests {
       todoService.alterTodo(todoVm, someTodoId);
     });
     Assert.assertTrue(exception.getMessage().contains("nothing was changed"));
+  }
+
+  @Test
+  public void alterTodo_whenParameterTodoContainsNothing_shouldValidationException() {
+    final int someTodoId = 10;
+    TodoVm todoVm = TodoVm.builder().message(null).completed(null).build();
+    Exception exception = assertThrows(ValidationException.class, () -> {
+      todoService.alterTodo(todoVm, someTodoId);
+    });
+    Assert.assertTrue(exception.getMessage().contains(TodoService.noInputMessage));
+  }
+
+  @Test
+  public void alterTodo_whenParameterTodoHasMessageLength1_shouldValidationException() {
+    final int someTodoId = 10;
+    TodoVm todoVm = TodoVm.builder().message("a").completed(null).build();
+    Exception exception = assertThrows(ValidationException.class, () -> {
+      todoService.alterTodo(todoVm, someTodoId);
+    });
+    Assert.assertTrue(exception.getMessage().contains(TodoService.inputTooSmallMessage));
+  }
+
+  @Test
+  public void alterTodo_whenParameterTodoHasMessageLongerThen255_shouldValidationException() {
+    final int someTodoId = 10;
+    final String bigString =  IntStream.range(0, 300)
+            .mapToObj(i -> Character.toString((char)'a'))
+            .collect(Collectors.joining());
+    TodoVm todoVm = TodoVm.builder().message(bigString).completed(null).build();
+    Exception exception = assertThrows(ValidationException.class, () -> {
+      todoService.alterTodo(todoVm, someTodoId);
+    });
+    Assert.assertTrue(exception.getMessage().contains(TodoService.inputTooBigMessage));
   }
 }

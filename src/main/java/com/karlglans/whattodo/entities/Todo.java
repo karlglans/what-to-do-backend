@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Data
 @Builder
@@ -18,6 +20,8 @@ public class Todo {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
 
+  @NotNull
+  @Size(min = 1, max = 255)
   private String message;
 
   private boolean completed;
