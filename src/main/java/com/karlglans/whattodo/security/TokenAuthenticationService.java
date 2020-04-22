@@ -6,6 +6,8 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,8 @@ import java.util.Map;
 
 @Service
 public class TokenAuthenticationService {
+
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   @Value("${token.secret}")
   String secret;
@@ -48,12 +52,13 @@ public class TokenAuthenticationService {
     return Integer.parseInt(subject);
   }
 
-  public SecurityUser extractUserFromToken(Object token) {
+  SecurityUser extractUserFromToken(Object token) {
     String strToken = token.toString();
     DecodedJWT jwt;
     try {
       jwt = verifier.verify(strToken);
     } catch (JWTVerificationException exception) {
+      logger.info(String.format("Verification failed for token %s", strToken));
       throw new BadCredentialsException("Missing Authentication Token");
     }
     Map<String, Claim> claims = jwt.getClaims(); // Key is the Claim name
