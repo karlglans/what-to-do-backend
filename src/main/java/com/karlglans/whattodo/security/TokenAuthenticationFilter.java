@@ -28,7 +28,6 @@ public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingF
           final HttpServletResponse response) {
 
     // Either using jwt-token from header or trying to get it from request parameter
-//    String param = ofNullable(request.getHeader(AUTHORIZATION)
     String param = ofNullable(request.getHeader("Authorization"))
             .orElse(new StringBuilder(BEARER).append(" ").append(request.getParameter("token")).toString());
 
