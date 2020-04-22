@@ -5,6 +5,8 @@ import com.karlglans.whattodo.repositories.UserRepository;
 import com.karlglans.whattodo.security.SecurityUser;
 import com.karlglans.whattodo.security.oauth2.user.OAuth2UserInfo;
 import com.karlglans.whattodo.security.oauth2.user.OAuth2UserInfoFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
@@ -20,8 +22,14 @@ import java.util.Optional;
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+  private final UserRepository userRepository;
+
   @Autowired
-  UserRepository userRepository;
+  public CustomOAuth2UserService(UserRepository userRepository) {
+    this.userRepository = userRepository;
+  }
 
   @Override
   public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
@@ -32,6 +40,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     } catch (AuthenticationException ex) {
       throw ex;
     } catch (Exception ex) {
+      logger.error("failed to process user from oath");
       // Throwing an instance of AuthenticationException will trigger the OAuth2AuthenticationFailureHandler
       throw new InternalAuthenticationServiceException(ex.getMessage(), ex.getCause());
     }

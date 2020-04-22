@@ -1,6 +1,7 @@
 package com.karlglans.whattodo.security;
 
-import lombok.var;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,8 +12,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class TokenAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
 
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+  private final TokenAuthenticationService tokenAuthenticationService;
+
   @Autowired
-  TokenAuthenticationService tokenAuthenticationService;
+  public TokenAuthenticationProvider(TokenAuthenticationService tokenAuthenticationService) {
+    this.tokenAuthenticationService = tokenAuthenticationService;
+  }
 
   @Override
   protected void additionalAuthenticationChecks(final UserDetails d, final UsernamePasswordAuthenticationToken auth) {
@@ -25,6 +32,7 @@ public class TokenAuthenticationProvider extends AbstractUserDetailsAuthenticati
     String token = String.valueOf(authentication.getCredentials());
 
     if (token.contains("null") || token.isEmpty()) {
+      logger.info("malformed credentials header");
       throw new BadCredentialsException("Error!");
     }
 
