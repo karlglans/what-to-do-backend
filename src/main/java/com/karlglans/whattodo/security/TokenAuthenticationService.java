@@ -4,7 +4,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.Date;
-import java.util.Map;
 
 @Service
 public class TokenAuthenticationService {
@@ -61,11 +59,9 @@ public class TokenAuthenticationService {
       logger.info(String.format("Verification failed for token %s", strToken));
       throw new BadCredentialsException("Missing Authentication Token");
     }
-    Map<String, Claim> claims = jwt.getClaims(); // Key is the Claim name
 
     SecurityUser authUser = new SecurityUser();
     authUser.setUsername("google-" + jwt.getSubject() );
-//    authUser.setEmail(claims.get("email").asString());
     authUser.setSub(jwt.getSubject());
 
     return authUser;
@@ -74,7 +70,6 @@ public class TokenAuthenticationService {
   public String createToken(SecurityUser userPrincipal) {
     return JWT.create()
       .withIssuer(issuer)
-//      .withClaim("email", userPrincipal.getEmail())
       .withClaim("exp", makeExpireDate())
       .withSubject(userPrincipal.getSub())
       .sign(algorithm);
