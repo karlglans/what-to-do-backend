@@ -1,7 +1,10 @@
 Ett utdrag ur project_info.pdf
 
+Det skapas en användare i databasen som man skulle kunna använda för testning. Om man använder tokenet nedan så kan man autentisera som den användaren. Det kräver att stoppar in:`Bearer ${token}`i en authorization header för varje anrop.
+
 token för exempel-användaren:
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ3aGF0dG9kbyIsInN1YiI6MTAwLCJpYXQiOjE1ODc0NjQ0MDJ9.DJtkcZ656hMAYLCC7Ngxp4Edb9_YWwE1Q6n2_xw0_Zc
+
 
 
 ###### Skapa ett todo
