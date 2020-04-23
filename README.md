@@ -1,5 +1,9 @@
 Ett utdrag ur project_info.pdf
 
+token för exempel-användaren:
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ3aGF0dG9kbyIsInN1YiI6MTAwLCJpYXQiOjE1ODc0NjQ0MDJ9.DJtkcZ656hMAYLCC7Ngxp4Edb9_YWwE1Q6n2_xw0_Zc
+
+
 ###### Skapa ett todo
 ```
 curl --location --request POST 'http://localhost:8080/api/v1/todos' \
